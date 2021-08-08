@@ -22,7 +22,7 @@ fit <- lm(dist ~ speed, data = cars)
 fit
 ```
 
-# Including Plots
+# Including Plots for
 
 You can also embed plots. See Figure \@ref(fig:pie) for example:
 
