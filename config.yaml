@@ -1,8 +1,8 @@
 baseURL: https://rsawii.netlify.app/
 languageCode: en
 theme: hugo-apero
-title: Hugo Apéro
-author: Alison Hill
+title: Researcher and Students Association of WII
+author: RSA
 copyright: ''
 googleAnalytics: ''
 disqusShortname: ''
@@ -33,14 +33,14 @@ params:
   custom_theme: ''
   customheadingFontFamily: Fraunces
   customtextFontFamily: Commissioner
-  description: A modern, beautiful, and easily configurable blog theme for Hugo.
+  description:  A Place for Researchers and Students of WII to share their ideas, achievements and experiences
   favicon: /img/favicon.ico
   headingFontFamily: sans-serif
   logo: /img/blogophonic-mark-dark.png
   mainSections:
     - blog
-    - project
-    - talk
+    - initiatives
+    - tutorials
   navallcaps: yes
   orgLocal: Anywhere
   orgName: RStudio

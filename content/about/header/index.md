@@ -1,12 +1,10 @@
 ---
-## Configure header of page
+## Researcher and student assocaition of WII
 text_align_right: false
 show_title_as_headline: false
 headline: |
-  Hi, my name is Hugo Apéro. Nice to meet you.
+  Hi! Welcome to the RSA-WII website
 ---
 
-<!-- this is a subheadline -->
-I'm a Hugo theme you'll want to hang out with. :fr: 
 
-The page you are reading is based on a markdown file- look in `content/about/` to edit. There, look inside the `header`, `main`, and `sidebar` folders to get started building your own "about" page.
+This website is for all students and researchers of WII to share knowledge, and experience for a common goal, academic excellence. 
