@@ -1,8 +1,8 @@
 ---
 ## Configure sidebar content in narrow column
-author: "RSA"
-role: "Byramghattee by James Baillie Fraser - 1820"
-avatar: Byramghattee by James Baillie Fraser - 1820.jpg
+author: "Researcher and Student's Association of WII"
+role: ""
+avatar: rsalogonew12.png
 avatar_shape: rounded # circle, square, rounded
 show_social_links: true # specify social accounts in site config
 show_audio_link: false

@@ -2,7 +2,8 @@
 action_label: Read More &rarr;
 action_link: /about
 action_type: text
-description: This is the website for all researchers to collaborate and share their experiences, achievements and ideas with peers. Feel free to look around and get in touch with administrators to have your post featured on our blog pages. 
+description: This is the website for all researchers to collaborate and share their experiences, achievements and ideas with peers. Feel free to look around and get in touch with administrators to have your post featured on our [blog pages](/blog/). 
+
 image_left: false
 images:
 - img/agora.jpg
