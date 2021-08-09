@@ -1,22 +1,22 @@
 ---
 ## Configure sidebar content in narrow column
-author: "Hugo Apéro"
-role: "A Hugo theme"
+author: "RSA"
+role: "RSA-WII icon will go here"
 avatar: avatar.jpg
 avatar_shape: rounded # circle, square, rounded
 show_social_links: true # specify social accounts in site config
-show_audio_link: true
+show_audio_link: false
 audio_link: 
 - name: How to say my name
   url: audio.m4a
-link_list_label: "Interests" # bookmarks, elsewhere, etc.
+link_list_label: "Interesting links" # bookmarks, elsewhere, etc.
 link_list:
-- name: Paris
-  url: https://en.wikipedia.org/wiki/Paris
-- name: Pastries
-  url: https://en.wikipedia.org/wiki/Pastry
-- name: People
-  url: https://en.wikipedia.org/wiki/People
+- name: WII-homepage
+  url: https://wii.gov.in
+- name: Recruitment announcement
+  url: https://wii.gov.in/announcements
+- name: RSA-admins
+  url: 
 ---
 
 ** index doesn't contain a body, just front matter above.

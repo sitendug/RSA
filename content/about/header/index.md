@@ -1,5 +1,5 @@
 ---
-## Researcher and student assocaition of WII
+## Researcher and student association of WII
 text_align_right: false
 show_title_as_headline: false
 headline: |
