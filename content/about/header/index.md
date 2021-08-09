@@ -3,7 +3,7 @@
 text_align_right: false
 show_title_as_headline: false
 headline: |
-  Hi! Welcome to the RSA-WII website
+  Welcome 
 ---
 
 

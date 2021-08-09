@@ -1,7 +1,7 @@
 ---
 ## Configure sidebar content in narrow column
 author: "RSA"
-role: "RSA-WII icon will go here"
+role: "Byramghattee by James Baillie Fraser - 1820"
 avatar: Byramghattee by James Baillie Fraser - 1820.jpg
 avatar_shape: rounded # circle, square, rounded
 show_social_links: true # specify social accounts in site config
@@ -16,7 +16,7 @@ link_list:
 - name: Recruitment announcement
   url: https://wii.gov.in/announcements
 - name: RSA-admins
-  url: 
+  url: https://rsawii.netlify.app/elements/
 - name: WII-webmail
   url: https://mail.wii.gov.in/
 ---

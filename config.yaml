@@ -98,8 +98,8 @@ menu:
       title: A collection
       url: /collection/
       weight: 5
-    - name: Elements
-      title: Element Page
+    - name: Contact
+      title: Get in touch
       url: /elements/
       weight: 6
 privacy:
