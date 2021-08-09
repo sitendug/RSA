@@ -34,9 +34,9 @@ params:
   customheadingFontFamily: Fraunces
   customtextFontFamily: Commissioner
   description:  A Place for Researchers and Students of WII to share their ideas, achievements and experiences
-  favicon: /img/favicon.ico
+  favicon: /img/rsalogo.ico
   headingFontFamily: sans-serif
-  logo: /img/blogophonic-mark-dark.png
+  logo: /img/rsalogonewtrp.png
   mainSections:
     - blog
     - initiatives
