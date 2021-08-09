@@ -2,7 +2,7 @@
 ## Configure sidebar content in narrow column
 author: "RSA"
 role: "RSA-WII icon will go here"
-avatar: avatar.jpg
+avatar: Byramghattee by James Baillie Fraser - 1820.jpg
 avatar_shape: rounded # circle, square, rounded
 show_social_links: true # specify social accounts in site config
 show_audio_link: false
@@ -17,6 +17,8 @@ link_list:
   url: https://wii.gov.in/announcements
 - name: RSA-admins
   url: 
+- name: WII-webmail
+  url: https://mail.wii.gov.in/
 ---
 
 ** index doesn't contain a body, just front matter above.
