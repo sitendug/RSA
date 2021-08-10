@@ -9,9 +9,10 @@ title: License
 
 Article 19(1) (c) of the Constitution of India guarantees to all its citizens the right “to form associations, or unions or Co- Operative Societies.” 
 
-This website is a platform for researchers and students to share information, knowledge and collaborate on ideas in the pursuit of academic excellence.
+This website is a non-profit platform for researchers and students to share information, knowledge and collaborate on ideas in the pursuit of academic excellence.
 
-Participation here is voluntary and  constitute the fundamental rights of researchers as free citizens of the rupublic of India.
+
+Participation here is voluntary and  constitute the fundamental rights of researchers as free citizens of the republic of India.
 
 This website and its makers  do not represent the Indian government or the Wildlife Institute of India.
 

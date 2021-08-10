@@ -1,0 +1,71 @@
+---
+title: How to write functions in R
+author: S. Goswami
+date: '2021-08-10'
+slug: []
+categories:
+  - R-tutorial
+  - workshop
+tags:
+  - R Markdown
+weight: 2
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="what-is-a-function" class="section level2">
+<h2>What is a function?</h2>
+<p>A function is a tool that takes a some input and returns an output.
+I am sure most of us were not taught how to write functions in our basic R class.
+Every call that you make daily in your r console is a function
+Once you learn how to write functions, you will get a better understanding of R as a programming language.</p>
+</div>
+<div id="a-simple-function" class="section level2">
+<h2>A simple function</h2>
+<p>Lets start with a simple example, we will call our new function “troy”</p>
+<pre class="r"><code>troy &lt;- function(a,b){
+  a+b
+}
+
+troy(a = 2, b =4)</code></pre>
+<pre><code>## [1] 6</code></pre>
+<pre class="r"><code>## now if we change the values of a and b
+troy( a = 5, b =6)</code></pre>
+<pre><code>## [1] 11</code></pre>
+<p>So now we have a simple function called troy.
+We can create more complicated functions out of the same.
+In fact if you regularly use a set of common r functions, it is a good idea to write a simple function that aggregates your workflow</p>
+</div>
+<div id="functions-to-aggregate-workflow" class="section level2">
+<h2>Functions to aggregate workflow</h2>
+<pre class="r"><code>#library(mtcars)
+library(tidyverse)
+data= mtcars
+#glimpse(data)</code></pre>
+<p>Now lets say we follow some data wrangling steps on all data sets and finally generate a plot.
+We can easily create a function that simplifies the process.
+In the following chunk, we take the data mtcar and put all the functions that we want to perform within a function mtcarplot.
+The idea for this function is that we are avoiding repetition of efforts to generate simple outputs.
+This not oonly reduces the clutter of your code, it also makes you more efficient.</p>
+<pre class="r"><code>mtcarplot &lt;- function(gearnumber){
+  data |&gt; filter(gear == gearnumber) |&gt; 
+  ggplot(aes(y= mpg, x = disp, color = vs)) +
+    geom_point() + 
+    geom_smooth(method= &quot;lm&quot;)+
+    labs(title=&quot;Plot of Mileage ~ Displacement&quot;)
+}</code></pre>
+<p>Now our function mtcarplot has been created.
+Now all we have to do is change the number associated with “gearnumber” and we will have a fresh plot each time.</p>
+<pre class="r"><code>mtcarplot(gearnumber = 4)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Lets try to change the gear number to 3</p>
+<pre class="r"><code>mtcarplot(gearnumber = 3) </code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="create-your-own-function" class="section level2">
+<h2>Create your own function</h2>
+<p>Take a look at your own set of R scripts and see if you can spot some common set of functions that can be joined together to create your own custome function.</p>
+</div>

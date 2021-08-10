@@ -1,0 +1,88 @@
+---
+title: How to write functions in R
+author: S. Goswami
+date: '2021-08-10'
+slug: []
+categories:
+  - R-tutorial
+  - workshop
+tags:
+  - R Markdown
+weight: 2
+---
+
+## What is a function?
+
+A function is a tool that takes a some input and returns an output.
+I am sure most of us  were not taught how to write functions in our basic R class.
+Every call that you make daily in your r console is a function
+Once you learn how  to write functions, you will get a better understanding of R as a programming language.
+
+## A simple function
+
+Lets start with a simple example, we will call our new function "troy"
+```{r}
+
+troy <- function(a,b){
+  a+b
+}
+
+troy(a = 2, b =4)
+## now if we change the values of a and b
+troy( a = 5, b =6)
+```
+So now we have a simple function called troy. 
+We can create more complicated functions out of the same.
+In fact if you regularly use a set of common r functions, it is a good idea to write a simple function that aggregates your workflow
+
+## Functions to aggregate workflow
+
+```{r,message = FALSE}
+#library(mtcars)
+library(tidyverse)
+data= mtcars
+#glimpse(data)
+
+```
+Now lets say we follow some data wrangling steps on all data sets and finally generate a plot. 
+We can easily create a function that simplifies the process. 
+In the following chunk, we take the data mtcar and put all the functions that we want to perform within  a function mtcarplot. 
+The idea for this function is that we are avoiding repetition of efforts to generate simple outputs.
+This not oonly reduces the clutter of your code, it also makes you more efficient.
+
+
+```{r}
+
+mtcarplot <- function(gearnumber){
+  data |> filter(gear == gearnumber) |> 
+  ggplot(aes(y= mpg, x = disp, color = vs)) +
+    geom_point() + 
+    geom_smooth(method= "lm")+
+    labs(title="Plot of Mileage ~ Displacement")
+}
+```
+
+
+Now our function mtcarplot has been created. 
+Now all we have to do is change the number associated with "gearnumber" and we will have a fresh plot each time.
+
+
+```{r}
+mtcarplot(gearnumber = 4)
+```
+
+
+Lets try to change the gear number to 3
+
+
+```{r}
+mtcarplot(gearnumber = 3) 
+```
+
+
+##   Create your own function
+
+Take a look at your own set of R scripts and see if you can spot some common set of functions that can be joined together to create your own custome function.
+
+
+
