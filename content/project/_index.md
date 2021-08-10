@@ -8,13 +8,13 @@ cascade:
     show_sidebar_adunit: true
     text_link_label: View all projects
     text_link_url: /project/
-description: Give your projects a place to live online.
-layout: list-grid
+description:  Recent RSA initiatives
+layout: list-grid # change it to "list" if you want a traditional layout
 show_author_byline: true
 show_post_date: false
 show_post_thumbnail: true
 sidebar:
-  author: The R Markdown Team @RStudio
+  author: RSA
   description: "Projects can be anything!\nCheck out the _index.md file in the /project
     folder \nto edit this content.\n"
   show_sidebar_adunit: false

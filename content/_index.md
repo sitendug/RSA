@@ -13,6 +13,9 @@ subtitle: Researcher and Student's Association of Wildlife Institute of India
 text_align_left: true
 title: RSA-WII
 type: home
+show-outro: true
+outro:  |
+  This website and its makers  do not represent the Indian government or the Wildlife Institute of India. The opinions and posts presented here are independent and have no connection with the Wildlife Institute of India. 
 ---
 
 ** index doesn't contain a body, just front matter above.
