@@ -3,7 +3,7 @@ languageCode: en
 theme: hugo-apero
 title: Researcher and Students Association of WII
 author: RSA
-copyright: ''
+copyright: 'RSA'
 googleAnalytics: ''
 disqusShortname: ''
 metaDataFormat: yaml
@@ -106,7 +106,7 @@ privacy:
   disqus:
     disable: no
   googleAnalytics:
-    anonymizeIP: yes
+    anonymizeIP: no
     disable: no
     respectDoNotTrack: yes
   instagram:
