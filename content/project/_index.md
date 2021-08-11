@@ -1,8 +1,8 @@
 ---
-author: The R Markdown Team @RStudio
+author: RSA team
 cascade:
   show_author_byline: true
-  show_comments: false
+  show_comments: true
   show_post_date: true
   sidebar:
     show_sidebar_adunit: true
@@ -21,7 +21,7 @@ sidebar:
   text_link_label: "Tutorials"
   text_link_url: /collection/
   title: A Sidebar for Your Projects
-title: A Project Portfolio To Grow
+title: RSA Initiatives
 ---
 
 ** No content for the project index. This file provides front matter for the blog including the layout and boolean options. **

@@ -2,6 +2,8 @@
 author: RSA
 cascade:
   layout: single-series
+  show_comments: true
+  show_post_date: true
   sidebar:
     author: RSA
     description: "This is space to find out about workshops and activities hosted by the RSA"

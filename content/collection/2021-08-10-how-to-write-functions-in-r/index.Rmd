@@ -10,6 +10,9 @@ tags:
   - R Markdown
 weight: 2
 ---
+```{r setup, echo=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE)
+```
 
 ## What is a function?
 
@@ -48,7 +51,7 @@ Now lets say we follow some data wrangling steps on all data sets and finally ge
 We can easily create a function that simplifies the process. 
 In the following chunk, we take the data mtcar and put all the functions that we want to perform within  a function mtcarplot. 
 The idea for this function is that we are avoiding repetition of efforts to generate simple outputs.
-This not oonly reduces the clutter of your code, it also makes you more efficient.
+This not only reduces the clutter of your code, it also makes you more efficient.
 
 
 ```{r}
@@ -66,8 +69,11 @@ mtcarplot <- function(gearnumber){
 Now our function mtcarplot has been created. 
 Now all we have to do is change the number associated with "gearnumber" and we will have a fresh plot each time.
 
+> a function in R can have several inputs and based on what  you put inside the {} curly brackets. 
+> you get to decide what happens to those inputs and what is returned to you.
 
-```{r}
+
+```{r, message=FALSE}
 mtcarplot(gearnumber = 4)
 ```
 
@@ -75,7 +81,7 @@ mtcarplot(gearnumber = 4)
 Lets try to change the gear number to 3
 
 
-```{r}
+```{r, message=FALSE}
 mtcarplot(gearnumber = 3) 
 ```
 
