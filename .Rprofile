@@ -21,3 +21,4 @@ options(
 
 # fix Hugo version
 options(blogdown.hugo.version = "0.87.0")
+message("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")

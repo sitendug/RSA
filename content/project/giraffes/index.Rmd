@@ -1,0 +1,111 @@
+---
+author: Sitendu Goswami
+categories:
+- Theme Features
+- R
+- package
+date: "2019-07-03"
+draft: false
+excerpt: How to scrape data from websites with rvest and other tools in r
+layout: single
+subtitle: A tachyon /ˈtæki.ɒn/ or tachyonic particle is a hypothetical particle that
+  always moves faster than light.
+tags:
+- hugo-site
+title: Webscraping with Rvest
+---
+
+
+
+## hat is webscraping?
+
+If you are reading this, you probably have some idea about web scraping. 
+Now will be a good time to tell you that I am not a expert either.
+What I share here today is my experience with web scraping, which is primarily need based.
+This article provides a basic understanding of webscraping and how to get started with it in r.
+
+Webscraping can be defined as the method of importing rawHTML files from target pages on the Internet and parse that page to gather specific text data.
+
+
+```{r}
+library(rvest)
+library(httr)
+library(tidyverse)
+link = "https://wii.gov.in/announcements?page=0"
+announcement = ".title a"
+page <- read_html(link)
+an<- page |> html_nodes(announcement) 
+an<- an |> html_text() 
+
+dplyr::glimpse(an)
+an<- NULL
+for(page in seq(1:4)){
+  ant <- data.frame()
+  url <- paste0("https://wii.gov.in/announcements?page=",page)
+  print(url)
+  # an<- as_tibble(ant)
+  # announcement = ".title a"
+  page <- url |> httr::GET( timeout(2)) |> read_html()
+  announcement<- page |> html_nodes(".title a") |> html_text()
+  announcement <- data.frame(announcement)
+  an<- rbind(an,announcement)
+}
+dim(an)
+glimpse(an)
+```
+
+```{r}
+link = "https://www.amazon.in/s?k=laptop&crid=3P7CT738VIJ69&sprefix=laptop%2Caps%2C342&ref=nb_sb_noss_1"
+car_name = ".a-size-medium.a-text-normal"
+page <- read_html(link)
+an<- page |> html_nodes(car_name) |> html_text()
+price <- page |> html_nodes(".a-price-whole") |> html_text()
+dplyr::glimpse(an)
+price
+```
+
+```{r newslaundry}
+library(tidyverse)
+library(rvest)
+link<- "https://www.newslaundry.com/reports"
+post<- "bdi"
+page <- read_html(link)
+postdat<- page |> html_nodes(post) |> html_text()
+author<- page |> html_nodes("._2KDZg") |> html_text()
+datepub <- page |> html_nodes("time") |> html_text()
+glimpse(postdat)
+postdat
+author
+date
+postdat<- as.character(postdat)
+library(sentimentr)
+library(sendmailR)
+sentiment(postdat)
+sentiment(postdat) |> 
+  group_by(element_id) |> 
+  mutate(average_sentiment = mean(sentiment)) |> 
+  as_tibble() |> 
+  ggplot(aes(x = word_count, y = average_sentiment)) +
+  geom_point()
+
+```
+```{r}
+library(rtweet)
+library(httpuv)
+??rtweet
+api_key <- "BIpcAyLZrG4KW8445xnv0YzBy"
+api_secret_key <- "zjMfm3fPmAgpSZi48BdfMgcXz7E9czJAz05cwoFe6EVer7Vb1Z"
+bearer<- "AAAAAAAAAAAAAAAAAAAAADoDIQEAAAAAlSmUPo0pYk%2FC6zLi4isplW1S3q4%3DeaFxR7c5a9xGH4KQ8WCWuCNkoN4QpU1SnchsVZydpwY3b2Pi75"
+accesstoken<- "17918454-lfLq12rcb7WtKZ9m7ig6P9ifwT1gYLkpbooVqHgMT"
+accesstokensecret<- "bQnsVzN3sepOJY9N19TlY7sqqA1TK9HFwDais2nj2GgCm"
+app_name<- "twitterindia878"
+token<- create_token(
+  app = app_name,
+  consumer_key = api_key,
+  consumer_secret = api_secret_key,
+  access_token = accesstoken,
+  access_secret = accesstokensecret)
+get_token()
+search_tweets("#Rstats", n = 10, include_rts = TRUE)
+```
+

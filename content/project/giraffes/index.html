@@ -1,0 +1,407 @@
+---
+author: Sitendu Goswami
+categories:
+- Theme Features
+- R
+- package
+date: "2019-07-03"
+draft: false
+excerpt: How to scrape data from websites with rvest and other tools in r
+layout: single
+subtitle: A tachyon /ˈtæki.ɒn/ or tachyonic particle is a hypothetical particle that
+  always moves faster than light.
+tags:
+- hugo-site
+title: Webscraping with Rvest
+---
+
+
+
+<div id="hat-is-webscraping" class="section level2">
+<h2>hat is webscraping?</h2>
+<p>If you are reading this, you probably have some idea about web scraping.
+Now will be a good time to tell you that I am not a expert either.
+What I share here today is my experience with web scraping, which is primarily need based.
+This article provides a basic understanding of webscraping and how to get started with it in r.</p>
+<p>Webscraping can be defined as the method of importing rawHTML files from target pages on the Internet and parse that page to gather specific text data.</p>
+<pre class="r"><code>library(rvest)
+library(httr)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────── tidyverse 1.3.1.9000 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.3.6          ✔ purrr   0.3.4     
+## ✔ tibble  3.1.7          ✔ dplyr   1.0.9.9000
+## ✔ tidyr   1.2.0          ✔ stringr 1.4.0     
+## ✔ readr   2.1.2          ✔ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter()         masks stats::filter()
+## ✖ readr::guess_encoding() masks rvest::guess_encoding()
+## ✖ dplyr::lag()            masks stats::lag()</code></pre>
+<pre class="r"><code>link = &quot;https://wii.gov.in/announcements?page=0&quot;
+announcement = &quot;.title a&quot;
+page &lt;- read_html(link)
+an&lt;- page |&gt; html_nodes(announcement) 
+an&lt;- an |&gt; html_text() 
+
+dplyr::glimpse(an)</code></pre>
+<pre><code>##  chr [1:10] &quot;Online Course on basics of rescue and rehabilitation of freshwater macro-fauna in Ganga Basin (with special ref&quot;| __truncated__ ...</code></pre>
+<pre class="r"><code>an&lt;- NULL
+for(page in seq(1:4)){
+  ant &lt;- data.frame()
+  url &lt;- paste0(&quot;https://wii.gov.in/announcements?page=&quot;,page)
+  print(url)
+  # an&lt;- as_tibble(ant)
+  # announcement = &quot;.title a&quot;
+  page &lt;- url |&gt; httr::GET( timeout(2)) |&gt; read_html()
+  announcement&lt;- page |&gt; html_nodes(&quot;.title a&quot;) |&gt; html_text()
+  announcement &lt;- data.frame(announcement)
+  an&lt;- rbind(an,announcement)
+}</code></pre>
+<pre><code>## [1] &quot;https://wii.gov.in/announcements?page=1&quot;
+## [1] &quot;https://wii.gov.in/announcements?page=2&quot;
+## [1] &quot;https://wii.gov.in/announcements?page=3&quot;
+## [1] &quot;https://wii.gov.in/announcements?page=4&quot;</code></pre>
+<pre class="r"><code>dim(an)</code></pre>
+<pre><code>## [1] 40  1</code></pre>
+<pre class="r"><code>glimpse(an)</code></pre>
+<pre><code>## Rows: 40
+## Columns: 1
+## $ announcement &lt;chr&gt; &quot;Result of Online interview for Contractual Engagement un…</code></pre>
+<pre class="r"><code>link = &quot;https://www.amazon.in/s?k=laptop&amp;crid=3P7CT738VIJ69&amp;sprefix=laptop%2Caps%2C342&amp;ref=nb_sb_noss_1&quot;
+car_name = &quot;.a-size-medium.a-text-normal&quot;
+page &lt;- read_html(link)
+an&lt;- page |&gt; html_nodes(car_name) |&gt; html_text()
+price &lt;- page |&gt; html_nodes(&quot;.a-price-whole&quot;) |&gt; html_text()
+dplyr::glimpse(an)</code></pre>
+<pre><code>##  chr [1:22] &quot;Dell New Vostro 3400 Laptop, Intel i5-1135G7, Win11 + Office&#39;21, 8GB GDDR4, 512GB SSD, 14\&quot; (35.56Cms) FHD AG, &quot;| __truncated__ ...</code></pre>
+<pre class="r"><code>price</code></pre>
+<pre><code>##  [1] &quot;53,390&quot;   &quot;38,990&quot;   &quot;26,990&quot;   &quot;29,052&quot;   &quot;29,390&quot;   &quot;41,990&quot;  
+##  [7] &quot;61,990&quot;   &quot;46,990&quot;   &quot;34,490&quot;   &quot;25,390&quot;   &quot;32,990&quot;   &quot;58,999&quot;  
+## [13] &quot;33,490&quot;   &quot;38,090&quot;   &quot;18,190&quot;   &quot;39,990&quot;   &quot;36,990&quot;   &quot;57,490&quot;  
+## [19] &quot;48,610&quot;   &quot;26,499&quot;   &quot;1,29,990&quot; &quot;27,972&quot;</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(rvest)
+link&lt;- &quot;https://www.newslaundry.com/reports&quot;
+post&lt;- &quot;bdi&quot;
+page &lt;- read_html(link)
+postdat&lt;- page |&gt; html_nodes(post) |&gt; html_text()
+author&lt;- page |&gt; html_nodes(&quot;._2KDZg&quot;) |&gt; html_text()
+datepub &lt;- page |&gt; html_nodes(&quot;time&quot;) |&gt; html_text()
+glimpse(postdat)</code></pre>
+<pre><code>##  chr [1:37] &quot;In two years, Delhi spent Rs 68 lakh on stubble decomposer, Rs 23 crore to advertise it&quot; ...</code></pre>
+<pre class="r"><code>postdat</code></pre>
+<pre><code>##  [1] &quot;In two years, Delhi spent Rs 68 lakh on stubble decomposer, Rs 23 crore to advertise it&quot;       
+##  [2] &quot;How an Uttarakhand village was drowned for ‘development’&quot;                                      
+##  [3] &quot;Bulldozers in Shaheen Bagh: Shopkeepers say they received no notice&quot;                           
+##  [4] &quot;Bulldozers in Shaheen Bagh: Shopkeepers say they received no notice&quot;                           
+##  [5] &quot;In Haryana’s villages, cow vigiliantism leads to a trail of terror\n&quot;                          
+##  [6] &quot;A year later, Maharashtra’s Covid widows still wait for government aid&quot;                        
+##  [7] &quot;In the face of police apathy, a helpless mother’s search for her missing daughter&quot;             
+##  [8] &quot;How an Indian tycoon’s petrochemicals empire quietly dodged Iran sanctions &quot;                   
+##  [9] &quot;How a top Meta executive has links with a firm that works for Modi and BJP&quot;                    
+## [10] &quot;&#39;Every conversation begins with which caste you belong to&#39;: Being Dalit in Rajasthan’s Pali \n&quot;
+## [11] &quot;Fearing eviction, artists in Asiad Village are scrambling to find new homes&quot;                   
+## [12] &quot;The trouble with IIMC’s recent recruitment of professors&quot;                                      
+## [13] &quot;Surviving a media trial: The story of Disha Salian’s family \n&quot;                                
+## [14] &quot;Who is Ansar, the main accused in Jahangirpuri violence?&quot;                                      
+## [15] &quot;Meet Ravi Ranjan Singh, crusader for ‘jhatka’ meat&quot;                                            
+## [16] &quot;Headless for 5 months, cases pile up, fact-finding panels freeze in PCI&quot;                       
+## [17] &quot;‘All’s well in love, war, ratings’: It&#39;s NBDA vs NBF again&quot;                                    
+## [18] &quot;Manoj Soni: Meet the ‘chhote Modi’ heading the UPSC selection committee&quot;                       
+## [19] &quot;&#39;I never thought they hated Muslims&#39;: In Jahangirpuri, friendships that survived&quot;              
+## [20] &quot;How PESA&#39;s mandate is violated in Maharashtra&quot;                                                 
+## [21] &quot;Bulldozers in Shaheen Bagh: Shopkeepers say they received no notice&quot;                           
+## [22] &quot;In Haryana’s villages, cow vigiliantism leads to a trail of terror\n&quot;                          
+## [23] &quot;A year later, Maharashtra’s Covid widows still wait for government aid&quot;                        
+## [24] &quot;In the face of police apathy, a helpless mother’s search for her missing daughter&quot;             
+## [25] &quot;How an Indian tycoon’s petrochemicals empire quietly dodged Iran sanctions &quot;                   
+## [26] &quot;How a top Meta executive has links with a firm that works for Modi and BJP&quot;                    
+## [27] &quot;&#39;Every conversation begins with which caste you belong to&#39;: Being Dalit in Rajasthan’s Pali \n&quot;
+## [28] &quot;Fearing eviction, artists in Asiad Village are scrambling to find new homes&quot;                   
+## [29] &quot;The trouble with IIMC’s recent recruitment of professors&quot;                                      
+## [30] &quot;Surviving a media trial: The story of Disha Salian’s family \n&quot;                                
+## [31] &quot;Who is Ansar, the main accused in Jahangirpuri violence?&quot;                                      
+## [32] &quot;Meet Ravi Ranjan Singh, crusader for ‘jhatka’ meat&quot;                                            
+## [33] &quot;Headless for 5 months, cases pile up, fact-finding panels freeze in PCI&quot;                       
+## [34] &quot;‘All’s well in love, war, ratings’: It&#39;s NBDA vs NBF again&quot;                                    
+## [35] &quot;Manoj Soni: Meet the ‘chhote Modi’ heading the UPSC selection committee&quot;                       
+## [36] &quot;&#39;I never thought they hated Muslims&#39;: In Jahangirpuri, friendships that survived&quot;              
+## [37] &quot;How PESA&#39;s mandate is violated in Maharashtra&quot;</code></pre>
+<pre class="r"><code>author</code></pre>
+<pre><code>##  [1] &quot;Basant Kumar&quot;           &quot;Nidhi Suresh&quot;           &quot;Shivangi Saxena&quot;       
+##  [4] &quot;Tanishka Sodhi &quot;        &quot;Prateek Goyal&quot;          &quot;Nidhi Suresh&quot;          
+##  [7] &quot;Anand Mangnale&quot;         &quot;Alina Tsogoeva&quot;         &quot;Paranjoy Guha Thakurta&quot;
+## [10] &quot;Ravi Nair&quot;              &quot;Abir Dasgupta&quot;          &quot;Akanksha Kumar&quot;        
+## [13] &quot;Laasya Shekhar&quot;         &quot;Basant Kumar&quot;           &quot;Prateek Goyal&quot;         
+## [16] &quot;Akanksha Kumar&quot;         &quot;Vidheesha Kuntamalla&quot;   &quot;Ashwine Kumar Singh&quot;   
+## [19] &quot;Laasya Shekhar&quot;         &quot;Tanishka Sodhi &quot;        &quot;Meghnad S&quot;             
+## [22] &quot;Ashwine Kumar Singh&quot;    &quot;Nidhi Suresh&quot;           &quot;Purnima Sah&quot;           
+## [25] &quot;Nidhi Suresh&quot;           &quot;Shivangi Saxena&quot;        &quot;Tanishka Sodhi &quot;       
+## [28] &quot;Prateek Goyal&quot;          &quot;Nidhi Suresh&quot;           &quot;Anand Mangnale&quot;        
+## [31] &quot;Alina Tsogoeva&quot;         &quot;Paranjoy Guha Thakurta&quot; &quot;Ravi Nair&quot;             
+## [34] &quot;Abir Dasgupta&quot;          &quot;Akanksha Kumar&quot;         &quot;Laasya Shekhar&quot;        
+## [37] &quot;Basant Kumar&quot;           &quot;Prateek Goyal&quot;          &quot;Akanksha Kumar&quot;        
+## [40] &quot;Vidheesha Kuntamalla&quot;   &quot;Ashwine Kumar Singh&quot;    &quot;Laasya Shekhar&quot;        
+## [43] &quot;Tanishka Sodhi &quot;        &quot;Meghnad S&quot;              &quot;Ashwine Kumar Singh&quot;   
+## [46] &quot;Nidhi Suresh&quot;           &quot;Purnima Sah&quot;</code></pre>
+<pre class="r"><code>date</code></pre>
+<pre><code>## function () 
+## .Internal(date())
+## &lt;bytecode: 0x56526c92b7c8&gt;
+## &lt;environment: namespace:base&gt;</code></pre>
+<pre class="r"><code>postdat&lt;- as.character(postdat)
+library(sentimentr)
+library(sendmailR)
+sentiment(postdat)</code></pre>
+<pre><code>##     element_id sentence_id word_count   sentiment
+##  1:          1           1         15 -0.06454972
+##  2:          2           1          8 -0.28284271
+##  3:          3           1         10 -0.18973666
+##  4:          4           1         10 -0.18973666
+##  5:          5           1         12 -0.17320508
+##  6:          6           1         12  0.07216878
+##  7:          7           1         15 -0.49057789
+##  8:          8           1         11  0.00000000
+##  9:          9           1         16  0.31250000
+## 10:         10           1         15 -0.06454972
+## 11:         11           1         12 -0.20207259
+## 12:         12           1          9 -0.16666667
+## 13:         13           1         11  0.15075567
+## 14:         14           1          9 -0.20000000
+## 15:         15           1          8  0.00000000
+## 16:         16           1         12 -0.11547005
+## 17:         17           1         12  0.30310889
+## 18:         18           1         11  0.00000000
+## 19:         19           1         11  0.51256929
+## 20:         20           1          7 -0.37796447
+## 21:         21           1         10 -0.18973666
+## 22:         22           1         12 -0.17320508
+## 23:         23           1         12  0.07216878
+## 24:         24           1         15 -0.49057789
+## 25:         25           1         11  0.00000000
+## 26:         26           1         16  0.31250000
+## 27:         27           1         15 -0.06454972
+## 28:         28           1         12 -0.20207259
+## 29:         29           1          9 -0.16666667
+## 30:         30           1         11  0.15075567
+## 31:         31           1          9 -0.20000000
+## 32:         32           1          8  0.00000000
+## 33:         33           1         12 -0.11547005
+## 34:         34           1         12  0.30310889
+## 35:         35           1         11  0.00000000
+## 36:         36           1         11  0.51256929
+## 37:         37           1          7 -0.37796447
+##     element_id sentence_id word_count   sentiment</code></pre>
+<pre class="r"><code>sentiment(postdat) |&gt; 
+  group_by(element_id) |&gt; 
+  mutate(average_sentiment = mean(sentiment)) |&gt; 
+  as_tibble() |&gt; 
+  ggplot(aes(x = word_count, y = average_sentiment)) +
+  geom_point()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/newslaundry-1.png" width="672" /></p>
+<pre class="r"><code>library(rtweet)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rtweet&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     flatten</code></pre>
+<pre class="r"><code>library(httpuv)
+??rtweet
+api_key &lt;- &quot;BIpcAyLZrG4KW8445xnv0YzBy&quot;
+api_secret_key &lt;- &quot;zjMfm3fPmAgpSZi48BdfMgcXz7E9czJAz05cwoFe6EVer7Vb1Z&quot;
+bearer&lt;- &quot;AAAAAAAAAAAAAAAAAAAAADoDIQEAAAAAlSmUPo0pYk%2FC6zLi4isplW1S3q4%3DeaFxR7c5a9xGH4KQ8WCWuCNkoN4QpU1SnchsVZydpwY3b2Pi75&quot;
+accesstoken&lt;- &quot;17918454-lfLq12rcb7WtKZ9m7ig6P9ifwT1gYLkpbooVqHgMT&quot;
+accesstokensecret&lt;- &quot;bQnsVzN3sepOJY9N19TlY7sqqA1TK9HFwDais2nj2GgCm&quot;
+app_name&lt;- &quot;twitterindia878&quot;
+token&lt;- create_token(
+  app = app_name,
+  consumer_key = api_key,
+  consumer_secret = api_secret_key,
+  access_token = accesstoken,
+  access_secret = accesstokensecret)</code></pre>
+<pre><code>## Warning: `create_token()` was deprecated in rtweet 1.0.0.
+## See vignette(&#39;auth&#39;) for details
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre><code>## Saving auth to &#39;~/.config/rtweet/create_token.rds&#39;</code></pre>
+<pre class="r"><code>get_token()</code></pre>
+<pre><code>## Warning: `get_token()` was deprecated in rtweet 1.0.0.
+## Please use `auth_get()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre><code>## &lt;Token&gt;
+## &lt;oauth_endpoint&gt;
+##  request:   https://api.twitter.com/oauth/request_token
+##  authorize: https://api.twitter.com/oauth/authenticate
+##  access:    https://api.twitter.com/oauth/access_token
+## &lt;oauth_app&gt; rtweet
+##   key:    BIpcAyLZrG4KW8445xnv0YzBy
+##   secret: &lt;hidden&gt;
+## &lt;credentials&gt; oauth_token, oauth_token_secret
+## ---</code></pre>
+<pre class="r"><code>search_tweets(&quot;#Rstats&quot;, n = 10, include_rts = TRUE)</code></pre>
+<pre><code>##                        created_at           id              id_str
+## 1  Wed May 11 02:17:57 +0000 2022 1.524212e+18 1524212181608595456
+## 2  Tue May 10 02:13:28 +0000 2022 1.523849e+18 1523848664610861056
+## 3  Wed May 04 15:07:50 +0000 2022 1.521869e+18 1521869213257936897
+## 4  Thu May 12 07:39:05 +0000 2022 1.524655e+18 1524655385466048515
+## 5  Thu May 12 07:39:05 +0000 2022 1.524655e+18 1524655385403084800
+## 6  Thu May 12 07:39:00 +0000 2022 1.524655e+18 1524655365924790274
+## 7  Thu May 12 07:38:51 +0000 2022 1.524655e+18 1524655326032801793
+## 8  Thu May 12 07:37:37 +0000 2022 1.524655e+18 1524655017629831168
+## 9  Thu May 12 07:36:58 +0000 2022 1.524655e+18 1524654851900289028
+## 10 Thu May 12 07:36:54 +0000 2022 1.524655e+18 1524654834867224577
+##                                                                                                                                                                                                                                                                                                                                  full_text
+## 1                                                                                                                                                                          New chapter of R4DS on missing values: https://t.co/CrEfwJb3We. It&#39;s quite short but hopefully gives a few useful tools that the book previously lacked #rstats
+## 2  The google-y #rstats version of parsing Jolene:\n\nlibrary(googledrive)\nlibrary(googlesheets4)\n\ndrive_auth(email = &quot;you@example.com&quot;)\ngs4_auth(token = drive_token())\n\nss &amp;lt;- &quot;jolene.csv&quot; |&amp;gt; \n  drive_upload(type = &quot;spreadsheet&quot;) |&amp;gt; \n  range_autofit(range = &quot;A:D&quot;) |&amp;gt; \n  drive_browse() https://t.co/nBHhBoAiba
+## 3                                                                                                                                              Updated R4DS chapter on data tidying just landed: https://t.co/pZV8y5I3Ay. Includes new examples, new illustrations of pivoting, and a new section on creating usefully untidy data #rstats
+## 4                                                                                                                                                                                        RT @Khulood_Almani: 🌊Shipping Container #Pool🤩Do you want one❓\n\n#tech #innovation #digital #cloud #AI #MachineLearning #Fintech #bigdata #D…
+## 5                                                                                                                                                                                        RT @Khulood_Almani: 🌊Shipping Container #Pool🤩Do you want one❓\n\n#tech #innovation #digital #cloud #AI #MachineLearning #Fintech #bigdata #D…
+## 6                                                                                                                                                                                        RT @Khulood_Almani: 🌊Shipping Container #Pool🤩Do you want one❓\n\n#tech #innovation #digital #cloud #AI #MachineLearning #Fintech #bigdata #D…
+## 7                                                                                                                                                                                           RT @CatherineAdenle: Data scientist vs data engineer: How demand for these roles is changing. \n\n#DataScience #analytics #datasets #programm…
+## 8                                                                                                                                                                                             RT @MartinSchobben: Beta-version of the oceanexplorer app for the NOAA World Ocean Atlas is now online @UU_oceaNice @UUGeo @NOAANCEI #opens…
+## 9                                                                                                                                                                                             RT @Micheal74606768: RT @oss_ec: RT @sonu_monika: Why #Blockchain’s #ethical Stakes Are So High https://t.co/G8xjfI1vSd #AI #SaaS #DataSecu…
+## 10                                                                                                                                                                                            RT @Micheal74606768: RT @lnbcore: RT @sonu_monika: Why #Blockchain’s #ethical Stakes Are So High https://t.co/G8xjfI1vSd #AI #SaaS #DataSec…
+##    truncated display_text_range
+## 1      FALSE                159
+## 2      FALSE                292
+## 3      FALSE                187
+## 4      FALSE                140
+## 5      FALSE                140
+## 6      FALSE                140
+## 7      FALSE                140
+## 8      FALSE                140
+## 9      FALSE                140
+## 10     FALSE                140
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 entities
+## 1                                                                                                                                                                                                                                                                                                                              rstats, 152, 159, NA, NA, NA, NA, NA, NA, NA, https://t.co/CrEfwJb3We, https://r4ds.hadley.nz/missing-values.html, r4ds.hadley.nz/missing-values…, 39, 62, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 2                                                                                       rstats, 13, 20, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 1523848224041103360, 1523848224041103361, 293, 316, http://pbs.twimg.com/media/FSXL4tWUcAEnAeQ.png, https://pbs.twimg.com/media/FSXL4tWUcAEnAeQ.png, https://t.co/nBHhBoAiba, pic.twitter.com/nBHhBoAiba, https://twitter.com/JennyBryan/status/1523848664610861056/photo/1, photo, 632, 632, 150, 632, 459, 459, 150, 459, fit, fit, crop, fit, large, small, thumb, medium, NA
+## 3                                                                                                                                                                                                                                                                                                                                    rstats, 180, 187, NA, NA, NA, NA, NA, NA, NA, https://t.co/pZV8y5I3Ay, https://r4ds.hadley.nz/data-tidy.html, r4ds.hadley.nz/data-tidy.html, 50, 73, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 4                                                                                                                                                                                              Pool, tech, innovation, digital, cloud, AI, MachineLearning, Fintech, bigdata, 40, 45, 64, 69, 70, 81, 82, 90, 91, 97, 98, 101, 102, 118, 119, 127, 128, 136, NA, NA, Khulood_Almani, Dr. Khulood Almani | د.خلود المانع, 1403861754808049664, 1403861754808049666, 3, 18, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 5                                                                                                                                                                                              Pool, tech, innovation, digital, cloud, AI, MachineLearning, Fintech, bigdata, 40, 45, 64, 69, 70, 81, 82, 90, 91, 97, 98, 101, 102, 118, 119, 127, 128, 136, NA, NA, Khulood_Almani, Dr. Khulood Almani | د.خلود المانع, 1403861754808049664, 1403861754808049666, 3, 18, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 6                                                                                                                                                                                              Pool, tech, innovation, digital, cloud, AI, MachineLearning, Fintech, bigdata, 40, 45, 64, 69, 70, 81, 82, 90, 91, 97, 98, 101, 102, 118, 119, 127, 128, 136, NA, NA, Khulood_Almani, Dr. Khulood Almani | د.خلود المانع, 1403861754808049664, 1403861754808049666, 3, 18, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 7                                                                                                                                                                                                                                                                                                                                    DataScience, analytics, datasets, 96, 108, 109, 119, 120, 129, NA, NA, CatherineAdenle, Catherine Adenle, 68433676, 68433676, 3, 19, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 8                                                                                                                                                                                                    NA, NA, NA, NA, MartinSchobben, UU_oceaNice, UUGeo, NOAANCEI, Martin Schobben, OceaNice, Geosciences UU, NOAA NCEI, 1487569645, 1090898195218120704, 49980589, 916735110, 1487569645, 1090898195218120704, 49980589, 916735110, 3, 103, 116, 123, 18, 115, 122, 132, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 9        Blockchain, ethical, AI, SaaS, 54, 65, 68, 76, 120, 123, 124, 129, NA, NA, Micheal74606768, oss_ec, sonu_monika, Michael Williams, OSS-EC.com, Dr. Monika Sonu, CEO Healthinnovationtoolbox, 1323910557452259328, 1413068631768911872, 1025638818068590592, 1323910557452259331, 1413068631768911876, 1025638818068590592, 3, 24, 36, 19, 31, 48, https://t.co/G8xjfI1vSd, https://hbr.org/2022/05/why-blockchains-ethical-stakes-are-so-high, hbr.org/2022/05/why-bl…, 96, 119, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 10 Blockchain, ethical, AI, SaaS, 55, 66, 69, 77, 121, 124, 125, 130, NA, NA, Micheal74606768, lnbcore, sonu_monika, Michael Williams, Learn and Build, Dr. Monika Sonu, CEO Healthinnovationtoolbox, 1323910557452259328, 1309867693516795904, 1025638818068590592, 1323910557452259331, 1309867693516795909, 1025638818068590592, 3, 24, 37, 19, 32, 49, https://t.co/G8xjfI1vSd, https://hbr.org/2022/05/why-blockchains-ethical-stakes-are-so-high, hbr.org/2022/05/why-bl…, 97, 120, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+##       metadata
+## 1  popular, en
+## 2  popular, en
+## 3  popular, en
+## 4   recent, en
+## 5   recent, en
+## 6   recent, en
+## 7   recent, en
+## 8   recent, en
+## 9   recent, en
+## 10  recent, en
+##                                                                                source
+## 1             &lt;a href=&quot;https://mobile.twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web App&lt;/a&gt;
+## 2             &lt;a href=&quot;https://mobile.twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web App&lt;/a&gt;
+## 3             &lt;a href=&quot;https://mobile.twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web App&lt;/a&gt;
+## 4                  &lt;a href=&quot;https://yathinbabu.github.io&quot; rel=&quot;nofollow&quot;&gt;xael bot&lt;/a&gt;
+## 5                           &lt;a href=&quot;https://curiousluke.com&quot; rel=&quot;nofollow&quot;&gt;RTML&lt;/a&gt;
+## 6            &lt;a href=&quot;https://www.thomashilbig.com/&quot; rel=&quot;nofollow&quot;&gt;TheBigDataBot&lt;/a&gt;
+## 7  &lt;a href=&quot;http://twitter.com/download/iphone&quot; rel=&quot;nofollow&quot;&gt;Twitter for iPhone&lt;/a&gt;
+## 8             &lt;a href=&quot;https://mobile.twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web App&lt;/a&gt;
+## 9      &lt;a href=&quot;http://localhost.com&quot; rel=&quot;nofollow&quot;&gt;Serverless Tweet/Retweet Bot&lt;/a&gt;
+## 10     &lt;a href=&quot;http://localhost.com&quot; rel=&quot;nofollow&quot;&gt;Serverless Tweet/Retweet Bot&lt;/a&gt;
+##    in_reply_to_status_id in_reply_to_status_id_str in_reply_to_user_id
+## 1                     NA                        NA                  NA
+## 2                     NA                        NA                  NA
+## 3                     NA                        NA                  NA
+## 4                     NA                        NA                  NA
+## 5                     NA                        NA                  NA
+## 6                     NA                        NA                  NA
+## 7                     NA                        NA                  NA
+## 8                     NA                        NA                  NA
+## 9                     NA                        NA                  NA
+## 10                    NA                        NA                  NA
+##    in_reply_to_user_id_str in_reply_to_screen_name geo coordinates
+## 1                       NA                      NA  NA  NA, NA, NA
+## 2                       NA                      NA  NA  NA, NA, NA
+## 3                       NA                      NA  NA  NA, NA, NA
+## 4                       NA                      NA  NA  NA, NA, NA
+## 5                       NA                      NA  NA  NA, NA, NA
+## 6                       NA                      NA  NA  NA, NA, NA
+## 7                       NA                      NA  NA  NA, NA, NA
+## 8                       NA                      NA  NA  NA, NA, NA
+## 9                       NA                      NA  NA  NA, NA, NA
+## 10                      NA                      NA  NA  NA, NA, NA
+##                         place contributors is_quote_status retweet_count
+## 1  NA, NA, NA, NA, NA, NA, NA           NA           FALSE            59
+## 2  NA, NA, NA, NA, NA, NA, NA           NA           FALSE            18
+## 3  NA, NA, NA, NA, NA, NA, NA           NA           FALSE            60
+## 4  NA, NA, NA, NA, NA, NA, NA           NA           FALSE            77
+## 5  NA, NA, NA, NA, NA, NA, NA           NA           FALSE            77
+## 6  NA, NA, NA, NA, NA, NA, NA           NA           FALSE            77
+## 7  NA, NA, NA, NA, NA, NA, NA           NA           FALSE             6
+## 8  NA, NA, NA, NA, NA, NA, NA           NA           FALSE             7
+## 9  NA, NA, NA, NA, NA, NA, NA           NA           FALSE             1
+## 10 NA, NA, NA, NA, NA, NA, NA           NA           FALSE             2
+##    favorite_count favorited retweeted possibly_sensitive lang
+## 1             381     FALSE     FALSE              FALSE   en
+## 2             116     FALSE     FALSE              FALSE   en
+## 3             250     FALSE     FALSE              FALSE   en
+## 4               0     FALSE     FALSE                 NA   en
+## 5               0     FALSE     FALSE                 NA   en
+## 6               0     FALSE     FALSE                 NA   en
+## 7               0     FALSE     FALSE                 NA   en
+## 8               0     FALSE     FALSE                 NA   en
+## 9               0     FALSE     FALSE              FALSE   en
+## 10              0     FALSE     FALSE              FALSE   en
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    retweeted_status
+## 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+## 4  Tue May 10 12:09:49 +0000 2022, 1523998744492093440, 1523998744492093441, 🌊Shipping Container #Pool🤩Do you want one❓\n\n#tech #innovation #digital #cloud #AI #MachineLearning #Fintech #bigdata #DataScience #IoT #100DaysOfCode #javascript #Python #coding #flutter #twitme #TensorFlow #nodejs #serverless #RStats #reactjs #startup\n\nhttps://t.co/7m7WNU9end, FALSE, 0, 277, Pool, tech, innovation, digital, cloud, AI, MachineLearning, Fintech, bigdata, DataScience, IoT, 100DaysOfCode, javascript, Python, coding, flutter, twitme, TensorFlow, nodejs, serverless, RStats, reactjs, startup, 20, 25, 44, 49, 50, 61, 62, 70, 71, 77, 78, 81, 82, 98, 99, 107, 108, 116, 117, 129, 130, 134, 135, 149, 150, 161, 162, 169, 170, 177, 178, 186, 187, 194, 195, 206, 207, 214, 215, 226, 227, 234, 235, 243, 244, 252, 1522956427131826176, 1522956427131826177, 254, 277, http://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://t.co/7m7WNU9end, pic.twitter.com/7m7WNU9end, https://twitter.com/gigadgets_/status/1522956569079840771/video/1, photo, 640, 640, fit, 150, 150, crop, 640, 640, fit, 640, 640, fit, 1522956569079840768, 1522956569079840771, 3669881952, 3669881952, 1522956427131826176, 1522956427131826177, 254, 277, http://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://t.co/7m7WNU9end, pic.twitter.com/7m7WNU9end, https://twitter.com/gigadgets_/status/1522956569079840771/video/1, video, 640, 640, fit, 150, 150, crop, 640, 640, fit, 640, 640, fit, 1522956569079840768, 1522956569079840771, 3669881952, 3669881952, 1, 1, 60075, 832000, NA, 1280000, 432000, video/mp4, application/x-mpegURL, video/mp4, video/mp4, https://video.twimg.com/amplify_video/1522956427131826177/vid/540x540/2_Q-okJFtpxM3BWA.mp4?tag=14, https://video.twimg.com/amplify_video/1522956427131826177/pl/6xvZ9Jyd8_OKoEGc.m3u8?tag=14&amp;container=fmp4, https://video.twimg.com/amplify_video/1522956427131826177/vid/640x640/cAebBr_wencyUPjN.mp4?tag=14, https://video.twimg.com/amplify_video/1522956427131826177/vid/320x320/KLXptxHsLXlYLL8_.mp4?tag=14, Shipping Container Pool , FALSE, en, recent, &lt;a href=&quot;https://mobile.twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web App&lt;/a&gt;, NA, NA, NA, NA, NA, 1403861754808049664, 1403861754808049666, Dr. Khulood Almani | د.خلود المانع, Khulood_Almani, Kingdom of Saudi Arabia, Top 3️⃣ #World #Tech #Leader #Metaverse #AI @getengati |📌 https://t.co/zsd5tx3QmJ📌|#CES2022 #MWC22 |التحول_الرقمي| https://t.co/QcmHQS9dA5. #DigitalTransformation #Innovation, https://t.co/wSY0VoIm9q, https://t.co/wSY0VoIm9q, https://www.linkedin.com/in/dr-khulood-almani-595513162, linkedin.com/in/dr-khulood-…, 0, 23, https://t.co/zsd5tx3QmJ, https://t.co/QcmHQS9dA5, http://bit.ly/3ESyoWJ, http://Asst.Prof, bit.ly/3ESyoWJ, Asst.Prof, 58, 81, 115, 138, FALSE, 33350, 2066, 97, Sat Jun 12 23:48:32 +0000 2021, 83156, NA, NA, FALSE, FALSE, 39205, NA, FALSE, FALSE, FALSE, F5F8FA, NA, NA, FALSE, http://pbs.twimg.com/profile_images/1463995808685207555/KK3ECtYE_normal.jpg, https://pbs.twimg.com/profile_images/1463995808685207555/KK3ECtYE_normal.jpg, https://pbs.twimg.com/profile_banners/1403861754808049666/1651368834, 1DA1F2, C0DEED, DDEEF6, 333333, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, none, NA, NA, NA, NA, FALSE, 77, 88, FALSE, FALSE, FALSE, en
+## 5  Tue May 10 12:09:49 +0000 2022, 1523998744492093440, 1523998744492093441, 🌊Shipping Container #Pool🤩Do you want one❓\n\n#tech #innovation #digital #cloud #AI #MachineLearning #Fintech #bigdata #DataScience #IoT #100DaysOfCode #javascript #Python #coding #flutter #twitme #TensorFlow #nodejs #serverless #RStats #reactjs #startup\n\nhttps://t.co/7m7WNU9end, FALSE, 0, 277, Pool, tech, innovation, digital, cloud, AI, MachineLearning, Fintech, bigdata, DataScience, IoT, 100DaysOfCode, javascript, Python, coding, flutter, twitme, TensorFlow, nodejs, serverless, RStats, reactjs, startup, 20, 25, 44, 49, 50, 61, 62, 70, 71, 77, 78, 81, 82, 98, 99, 107, 108, 116, 117, 129, 130, 134, 135, 149, 150, 161, 162, 169, 170, 177, 178, 186, 187, 194, 195, 206, 207, 214, 215, 226, 227, 234, 235, 243, 244, 252, 1522956427131826176, 1522956427131826177, 254, 277, http://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://t.co/7m7WNU9end, pic.twitter.com/7m7WNU9end, https://twitter.com/gigadgets_/status/1522956569079840771/video/1, photo, 640, 640, fit, 150, 150, crop, 640, 640, fit, 640, 640, fit, 1522956569079840768, 1522956569079840771, 3669881952, 3669881952, 1522956427131826176, 1522956427131826177, 254, 277, http://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://t.co/7m7WNU9end, pic.twitter.com/7m7WNU9end, https://twitter.com/gigadgets_/status/1522956569079840771/video/1, video, 640, 640, fit, 150, 150, crop, 640, 640, fit, 640, 640, fit, 1522956569079840768, 1522956569079840771, 3669881952, 3669881952, 1, 1, 60075, 832000, NA, 1280000, 432000, video/mp4, application/x-mpegURL, video/mp4, video/mp4, https://video.twimg.com/amplify_video/1522956427131826177/vid/540x540/2_Q-okJFtpxM3BWA.mp4?tag=14, https://video.twimg.com/amplify_video/1522956427131826177/pl/6xvZ9Jyd8_OKoEGc.m3u8?tag=14&amp;container=fmp4, https://video.twimg.com/amplify_video/1522956427131826177/vid/640x640/cAebBr_wencyUPjN.mp4?tag=14, https://video.twimg.com/amplify_video/1522956427131826177/vid/320x320/KLXptxHsLXlYLL8_.mp4?tag=14, Shipping Container Pool , FALSE, en, recent, &lt;a href=&quot;https://mobile.twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web App&lt;/a&gt;, NA, NA, NA, NA, NA, 1403861754808049664, 1403861754808049666, Dr. Khulood Almani | د.خلود المانع, Khulood_Almani, Kingdom of Saudi Arabia, Top 3️⃣ #World #Tech #Leader #Metaverse #AI @getengati |📌 https://t.co/zsd5tx3QmJ📌|#CES2022 #MWC22 |التحول_الرقمي| https://t.co/QcmHQS9dA5. #DigitalTransformation #Innovation, https://t.co/wSY0VoIm9q, https://t.co/wSY0VoIm9q, https://www.linkedin.com/in/dr-khulood-almani-595513162, linkedin.com/in/dr-khulood-…, 0, 23, https://t.co/zsd5tx3QmJ, https://t.co/QcmHQS9dA5, http://bit.ly/3ESyoWJ, http://Asst.Prof, bit.ly/3ESyoWJ, Asst.Prof, 58, 81, 115, 138, FALSE, 33350, 2066, 97, Sat Jun 12 23:48:32 +0000 2021, 83156, NA, NA, FALSE, FALSE, 39205, NA, FALSE, FALSE, FALSE, F5F8FA, NA, NA, FALSE, http://pbs.twimg.com/profile_images/1463995808685207555/KK3ECtYE_normal.jpg, https://pbs.twimg.com/profile_images/1463995808685207555/KK3ECtYE_normal.jpg, https://pbs.twimg.com/profile_banners/1403861754808049666/1651368834, 1DA1F2, C0DEED, DDEEF6, 333333, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, none, NA, NA, NA, NA, FALSE, 77, 88, FALSE, FALSE, FALSE, en
+## 6  Tue May 10 12:09:49 +0000 2022, 1523998744492093440, 1523998744492093441, 🌊Shipping Container #Pool🤩Do you want one❓\n\n#tech #innovation #digital #cloud #AI #MachineLearning #Fintech #bigdata #DataScience #IoT #100DaysOfCode #javascript #Python #coding #flutter #twitme #TensorFlow #nodejs #serverless #RStats #reactjs #startup\n\nhttps://t.co/7m7WNU9end, FALSE, 0, 277, Pool, tech, innovation, digital, cloud, AI, MachineLearning, Fintech, bigdata, DataScience, IoT, 100DaysOfCode, javascript, Python, coding, flutter, twitme, TensorFlow, nodejs, serverless, RStats, reactjs, startup, 20, 25, 44, 49, 50, 61, 62, 70, 71, 77, 78, 81, 82, 98, 99, 107, 108, 116, 117, 129, 130, 134, 135, 149, 150, 161, 162, 169, 170, 177, 178, 186, 187, 194, 195, 206, 207, 214, 215, 226, 227, 234, 235, 243, 244, 252, 1522956427131826176, 1522956427131826177, 254, 277, http://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://t.co/7m7WNU9end, pic.twitter.com/7m7WNU9end, https://twitter.com/gigadgets_/status/1522956569079840771/video/1, photo, 640, 640, fit, 150, 150, crop, 640, 640, fit, 640, 640, fit, 1522956569079840768, 1522956569079840771, 3669881952, 3669881952, 1522956427131826176, 1522956427131826177, 254, 277, http://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://pbs.twimg.com/media/FSKg7PsX0AIowFO.jpg, https://t.co/7m7WNU9end, pic.twitter.com/7m7WNU9end, https://twitter.com/gigadgets_/status/1522956569079840771/video/1, video, 640, 640, fit, 150, 150, crop, 640, 640, fit, 640, 640, fit, 1522956569079840768, 1522956569079840771, 3669881952, 3669881952, 1, 1, 60075, 832000, NA, 1280000, 432000, video/mp4, application/x-mpegURL, video/mp4, video/mp4, https://video.twimg.com/amplify_video/1522956427131826177/vid/540x540/2_Q-okJFtpxM3BWA.mp4?tag=14, https://video.twimg.com/amplify_video/1522956427131826177/pl/6xvZ9Jyd8_OKoEGc.m3u8?tag=14&amp;container=fmp4, https://video.twimg.com/amplify_video/1522956427131826177/vid/640x640/cAebBr_wencyUPjN.mp4?tag=14, https://video.twimg.com/amplify_video/1522956427131826177/vid/320x320/KLXptxHsLXlYLL8_.mp4?tag=14, Shipping Container Pool , FALSE, en, recent, &lt;a href=&quot;https://mobile.twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web App&lt;/a&gt;, NA, NA, NA, NA, NA, 1403861754808049664, 1403861754808049666, Dr. Khulood Almani | د.خلود المانع, Khulood_Almani, Kingdom of Saudi Arabia, Top 3️⃣ #World #Tech #Leader #Metaverse #AI @getengati |📌 https://t.co/zsd5tx3QmJ📌|#CES2022 #MWC22 |التحول_الرقمي| https://t.co/QcmHQS9dA5. #DigitalTransformation #Innovation, https://t.co/wSY0VoIm9q, https://t.co/wSY0VoIm9q, https://www.linkedin.com/in/dr-khulood-almani-595513162, linkedin.com/in/dr-khulood-…, 0, 23, https://t.co/zsd5tx3QmJ, https://t.co/QcmHQS9dA5, http://bit.ly/3ESyoWJ, http://Asst.Prof, bit.ly/3ESyoWJ, Asst.Prof, 58, 81, 115, 138, FALSE, 33350, 2066, 97, Sat Jun 12 23:48:32 +0000 2021, 83156, NA, NA, FALSE, FALSE, 39205, NA, FALSE, FALSE, FALSE, F5F8FA, NA, NA, FALSE, http://pbs.twimg.com/profile_images/1463995808685207555/KK3ECtYE_normal.jpg, https://pbs.twimg.com/profile_images/1463995808685207555/KK3ECtYE_normal.jpg, https://pbs.twimg.com/profile_banners/1403861754808049666/1651368834, 1DA1F2, C0DEED, DDEEF6, 333333, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, none, NA, NA, NA, NA, FALSE, 77, 88, FALSE, FALSE, FALSE, en
+## 7                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Thu May 12 07:28:09 +0000 2022, 1524652636267589632, 1524652636267589637, Data scientist vs data engineer: How demand for these roles is changing. \n\n#DataScience #analytics #datasets #programming #Javascript #Data #DataScientists #BigData #Rstats #AI #Reactjs #Python #Tech #IIoT #ML #Coding #codenewbies #100DaysOfCode https://t.co/4BB1Sz2DGj, FALSE, 0, 269, DataScience, analytics, datasets, programming, Javascript, Data, DataScientists, BigData, Rstats, AI, Reactjs, Python, Tech, IIoT, ML, Coding, codenewbies, 100DaysOfCode, 75, 87, 88, 98, 99, 108, 109, 121, 122, 133, 134, 139, 140, 155, 156, 164, 165, 172, 173, 176, 177, 185, 186, 193, 194, 199, 200, 205, 206, 209, 210, 217, 218, 230, 231, 245, https://t.co/4BB1Sz2DGj, https://zd.net/3L8nDB9, zd.net/3L8nDB9, 246, 269, en, recent, &lt;a href=&quot;http://www.everyonesocial.com&quot; rel=&quot;nofollow&quot;&gt;EveryoneSocial&lt;/a&gt;, NA, NA, NA, NA, NA, 68433676, 68433676, Catherine Adenle, CatherineAdenle, England, United Kingdom, Top 22 Women in Tech and Influencers to Follow 2022. #Tech #AI #ML #Data, #Cybersecurity, Certified #ChangeManagement Professional, #Careeradvice, ❤️ Family, https://t.co/0j7D2DoEdH, https://t.co/0j7D2DoEdH, https://catherinescareercorner.com, catherinescareercorner.com, 0, 23, FALSE, 42187, 2555, 829, Mon Aug 24 15:37:04 +0000 2009, 44768, NA, NA, FALSE, FALSE, 27794, NA, FALSE, FALSE, FALSE, 7DBFED, http://abs.twimg.com/images/themes/theme12/bg.gif, https://abs.twimg.com/images/themes/theme12/bg.gif, TRUE, http://pbs.twimg.com/profile_images/476740017432584192/f_Wc8SVX_normal.jpeg, https://pbs.twimg.com/profile_images/476740017432584192/f_Wc8SVX_normal.jpeg, https://pbs.twimg.com/profile_banners/68433676/1651155028, 3D8EE0, 000000, 1C1C1C, 5C91B9, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, none, NA, NA, NA, NA, FALSE, 6, 4, FALSE, FALSE, FALSE, en
+## 8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Wed May 11 09:46:57 +0000 2022, 1524325177122861056, 1524325177122861056, Beta-version of the oceanexplorer app for the NOAA World Ocean Atlas is now online @UU_oceaNice @UUGeo @NOAANCEI #openscience #rstats. Feedback is welcome!\nhttps://t.co/IVxRsT8i1f, FALSE, 0, 179, openscience, rstats, 113, 125, 126, 133, UU_oceaNice, UUGeo, NOAANCEI, OceaNice, Geosciences UU, NOAA NCEI, 1090898195218120704, 49980589, 916735110, 1090898195218120704, 49980589, 916735110, 83, 95, 96, 102, 103, 112, https://t.co/IVxRsT8i1f, https://utrecht-university.shinyapps.io/oceanexplorer/, utrecht-university.shinyapps.io/oceanexplorer/, 156, 179, en, recent, &lt;a href=&quot;https://mobile.twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web App&lt;/a&gt;, NA, NA, NA, NA, NA, 1487569645, 1487569645, Martin Schobben, MartinSchobben, , (Earth) History | Geochemistry | Data analysis, https://t.co/UqCMqTqohE, https://t.co/UqCMqTqohE, https://martinschobben.github.io/webpage/, martinschobben.github.io/webpage/, 0, 23, FALSE, 86, 144, 2, Thu Jun 06 11:43:51 +0000 2013, 62, NA, NA, FALSE, FALSE, 16, NA, FALSE, FALSE, FALSE, C0DEED, http://abs.twimg.com/images/themes/theme1/bg.png, https://abs.twimg.com/images/themes/theme1/bg.png, FALSE, http://pbs.twimg.com/profile_images/1294967159110672385/pWQvjeRm_normal.jpg, https://pbs.twimg.com/profile_images/1294967159110672385/pWQvjeRm_normal.jpg, NA, 1DA1F2, C0DEED, DDEEF6, 333333, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, none, NA, NA, NA, NA, FALSE, 7, 2, FALSE, FALSE, FALSE, en
+## 9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             Thu May 12 07:36:52 +0000 2022, 1524654830060552192, 1524654830060552193, RT @oss_ec: RT @sonu_monika: Why #Blockchain’s #ethical Stakes Are So High https://t.co/G8xjfI1vSd #AI #SaaS #DataSecurity #dataScientist #5G #DataAnalytics #Python #RStats #Reactjs #IoT #flutter #Serverless #javascript #digitalhealth #TensorFlow #BigDa… https://t.co/VjsIxj3Ms0, FALSE, 0, 278, Blockchain, ethical, AI, SaaS, DataSecurity, dataScientist, 5G, DataAnalytics, Python, RStats, Reactjs, IoT, flutter, Serverless, javascript, digitalhealth, TensorFlow, BigDa, 33, 44, 47, 55, 99, 102, 103, 108, 109, 122, 123, 137, 138, 141, 142, 156, 157, 164, 165, 172, 173, 181, 182, 186, 187, 195, 196, 207, 208, 219, 220, 234, 235, 246, 247, 253, oss_ec, sonu_monika, OSS-EC.com, Dr. Monika Sonu, CEO Healthinnovationtoolbox, 1413068631768911872, 1025638818068590592, 1413068631768911876, 1025638818068590592, 3, 10, 15, 27, https://t.co/G8xjfI1vSd, https://hbr.org/2022/05/why-blockchains-ethical-stakes-are-so-high, hbr.org/2022/05/why-bl…, 75, 98, 1524515647736074240, 1524515647736074240, 255, 278, http://pbs.twimg.com/media/FSgq54XVUAAywWr.jpg, https://pbs.twimg.com/media/FSgq54XVUAAywWr.jpg, https://t.co/VjsIxj3Ms0, pic.twitter.com/VjsIxj3Ms0, https://twitter.com/sonu_monika/status/1524517317471719424/photo/1, photo, 680, 383, fit, 150, 150, crop, 1200, 675, fit, 1200, 675, fit, 1524517317471719424, 1524517317471719424, 1025638818068590592, 1025638818068590592, 1524515647736074240, 1524515647736074240, 255, 278, http://pbs.twimg.com/media/FSgq54XVUAAywWr.jpg, https://pbs.twimg.com/media/FSgq54XVUAAywWr.jpg, https://t.co/VjsIxj3Ms0, pic.twitter.com/VjsIxj3Ms0, https://twitter.com/sonu_monika/status/1524517317471719424/photo/1, photo, 680, 383, fit, 150, 150, crop, 1200, 675, fit, 1200, 675, fit, 1524517317471719424, 1524517317471719424, 1025638818068590592, 1025638818068590592, en, recent, &lt;a href=&quot;https://ifttt.com&quot; rel=&quot;nofollow&quot;&gt;IFTTT&lt;/a&gt;, NA, NA, NA, NA, NA, 1323910557452259328, 1323910557452259331, Michael Williams, Micheal74606768, , #MondayMorning\n#techophile\n#producthead @tagembed\n#SaaS\n#socialmedia\n#digitalmarketing, NA, FALSE, 452, 332, 6, Wed Nov 04 08:51:01 +0000 2020, 380, NA, NA, FALSE, FALSE, 12119, NA, FALSE, FALSE, FALSE, F5F8FA, NA, NA, FALSE, http://pbs.twimg.com/profile_images/1463817093204303880/6hEJ4qt8_normal.jpg, https://pbs.twimg.com/profile_images/1463817093204303880/6hEJ4qt8_normal.jpg, https://pbs.twimg.com/profile_banners/1323910557452259331/1604489572, 1DA1F2, C0DEED, DDEEF6, 333333, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, none, NA, NA, NA, NA, FALSE, 1, 0, FALSE, FALSE, FALSE, en
+## 10                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Thu May 12 07:36:48 +0000 2022, 1524654812951986176, 1524654812951986176, RT @lnbcore: RT @sonu_monika: Why #Blockchain’s #ethical Stakes Are So High https://t.co/G8xjfI1vSd #AI #SaaS #DataSecurity #dataScientist #5G #DataAnalytics #Python #RStats #Reactjs #IoT #flutter #Serverless #javascript #digitalhealth #TensorFlow #BigD… https://t.co/VjsIxj3Ms0, FALSE, 0, 278, Blockchain, ethical, AI, SaaS, DataSecurity, dataScientist, 5G, DataAnalytics, Python, RStats, Reactjs, IoT, flutter, Serverless, javascript, digitalhealth, TensorFlow, BigD, 34, 45, 48, 56, 100, 103, 104, 109, 110, 123, 124, 138, 139, 142, 143, 157, 158, 165, 166, 173, 174, 182, 183, 187, 188, 196, 197, 208, 209, 220, 221, 235, 236, 247, 248, 253, lnbcore, sonu_monika, Learn and Build, Dr. Monika Sonu, CEO Healthinnovationtoolbox, 1309867693516795904, 1025638818068590592, 1309867693516795909, 1025638818068590592, 3, 11, 16, 28, https://t.co/G8xjfI1vSd, https://hbr.org/2022/05/why-blockchains-ethical-stakes-are-so-high, hbr.org/2022/05/why-bl…, 76, 99, 1524515647736074240, 1524515647736074240, 255, 278, http://pbs.twimg.com/media/FSgq54XVUAAywWr.jpg, https://pbs.twimg.com/media/FSgq54XVUAAywWr.jpg, https://t.co/VjsIxj3Ms0, pic.twitter.com/VjsIxj3Ms0, https://twitter.com/sonu_monika/status/1524517317471719424/photo/1, photo, 680, 383, fit, 150, 150, crop, 1200, 675, fit, 1200, 675, fit, 1524517317471719424, 1524517317471719424, 1025638818068590592, 1025638818068590592, 1524515647736074240, 1524515647736074240, 255, 278, http://pbs.twimg.com/media/FSgq54XVUAAywWr.jpg, https://pbs.twimg.com/media/FSgq54XVUAAywWr.jpg, https://t.co/VjsIxj3Ms0, pic.twitter.com/VjsIxj3Ms0, https://twitter.com/sonu_monika/status/1524517317471719424/photo/1, photo, 680, 383, fit, 150, 150, crop, 1200, 675, fit, 1200, 675, fit, 1524517317471719424, 1524517317471719424, 1025638818068590592, 1025638818068590592, en, recent, &lt;a href=&quot;https://ifttt.com&quot; rel=&quot;nofollow&quot;&gt;IFTTT&lt;/a&gt;, NA, NA, NA, NA, NA, 1323910557452259328, 1323910557452259331, Michael Williams, Micheal74606768, , #MondayMorning\n#techophile\n#producthead @tagembed\n#SaaS\n#socialmedia\n#digitalmarketing, NA, FALSE, 452, 332, 6, Wed Nov 04 08:51:01 +0000 2020, 380, NA, NA, FALSE, FALSE, 12119, NA, FALSE, FALSE, FALSE, F5F8FA, NA, NA, FALSE, http://pbs.twimg.com/profile_images/1463817093204303880/6hEJ4qt8_normal.jpg, https://pbs.twimg.com/profile_images/1463817093204303880/6hEJ4qt8_normal.jpg, https://pbs.twimg.com/profile_banners/1323910557452259331/1604489572, 1DA1F2, C0DEED, DDEEF6, 333333, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, none, NA, NA, NA, NA, FALSE, 2, 0, FALSE, FALSE, FALSE, en
+##    quoted_status
+## 1             NA
+## 2             NA
+## 3             NA
+## 4             NA
+## 5             NA
+## 6             NA
+## 7             NA
+## 8             NA
+## 9             NA
+## 10            NA
+##                                                                                                                                                                                                                                                                                                                                       text
+## 1                                                                                                                                                                          New chapter of R4DS on missing values: https://t.co/CrEfwJb3We. It&#39;s quite short but hopefully gives a few useful tools that the book previously lacked #rstats
+## 2  The google-y #rstats version of parsing Jolene:\n\nlibrary(googledrive)\nlibrary(googlesheets4)\n\ndrive_auth(email = &quot;you@example.com&quot;)\ngs4_auth(token = drive_token())\n\nss &amp;lt;- &quot;jolene.csv&quot; |&amp;gt; \n  drive_upload(type = &quot;spreadsheet&quot;) |&amp;gt; \n  range_autofit(range = &quot;A:D&quot;) |&amp;gt; \n  drive_browse() https://t.co/nBHhBoAiba
+## 3                                                                                                                                              Updated R4DS chapter on data tidying just landed: https://t.co/pZV8y5I3Ay. Includes new examples, new illustrations of pivoting, and a new section on creating usefully untidy data #rstats
+## 4                                                                                                                                                                                        RT @Khulood_Almani: 🌊Shipping Container #Pool🤩Do you want one❓\n\n#tech #innovation #digital #cloud #AI #MachineLearning #Fintech #bigdata #D…
+## 5                                                                                                                                                                                        RT @Khulood_Almani: 🌊Shipping Container #Pool🤩Do you want one❓\n\n#tech #innovation #digital #cloud #AI #MachineLearning #Fintech #bigdata #D…
+## 6                                                                                                                                                                                        RT @Khulood_Almani: 🌊Shipping Container #Pool🤩Do you want one❓\n\n#tech #innovation #digital #cloud #AI #MachineLearning #Fintech #bigdata #D…
+## 7                                                                                                                                                                                           RT @CatherineAdenle: Data scientist vs data engineer: How demand for these roles is changing. \n\n#DataScience #analytics #datasets #programm…
+## 8                                                                                                                                                                                             RT @MartinSchobben: Beta-version of the oceanexplorer app for the NOAA World Ocean Atlas is now online @UU_oceaNice @UUGeo @NOAANCEI #opens…
+## 9                                                                                                                                                                                             RT @Micheal74606768: RT @oss_ec: RT @sonu_monika: Why #Blockchain’s #ethical Stakes Are So High https://t.co/G8xjfI1vSd #AI #SaaS #DataSecu…
+## 10                                                                                                                                                                                            RT @Micheal74606768: RT @lnbcore: RT @sonu_monika: Why #Blockchain’s #ethical Stakes Are So High https://t.co/G8xjfI1vSd #AI #SaaS #DataSec…
+##    favorited_by display_text_width quoted_status_id quoted_status_id_str
+## 1            NA                 NA               NA                   NA
+## 2            NA                 NA               NA                   NA
+## 3            NA                 NA               NA                   NA
+## 4            NA                 NA               NA                   NA
+## 5            NA                 NA               NA                   NA
+## 6            NA                 NA               NA                   NA
+## 7            NA                 NA               NA                   NA
+## 8            NA                 NA               NA                   NA
+## 9            NA                 NA               NA                   NA
+## 10           NA                 NA               NA                   NA
+##    quoted_status_permalink query possibly_sensitive_appealable
+## 1                       NA    NA                            NA
+## 2                       NA    NA                            NA
+## 3                       NA    NA                            NA
+## 4                       NA    NA                            NA
+## 5                       NA    NA                            NA
+## 6                       NA    NA                            NA
+## 7                       NA    NA                            NA
+## 8                       NA    NA                            NA
+## 9                       NA    NA                            NA
+## 10                      NA    NA                            NA</code></pre>
+</div>
